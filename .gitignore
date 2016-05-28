@@ -1,0 +1,12 @@
+# Intellij
+*.iml
+.idea/
+
+# Elm
+elm-stuff/
+elm.js
+repl-temp-*
+
+# Our build setup
+target/
+
