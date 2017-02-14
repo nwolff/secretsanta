@@ -3,14 +3,14 @@ module Main exposing (..)
 import Html exposing (div, button, text, textarea, Html, ul, li, h1)
 import Html.Attributes exposing (class, rows, placeholder)
 import Html.Events exposing (onClick, onInput)
-import Html.App exposing (program)
+import Html exposing (program)
 import List
 import Random
-import Array
-import Random.Array
+import Random.List
 import String
 
 
+main : Program Never Model Msg
 main =
     program { init = ( model, Cmd.none ), update = update, subscriptions = subscriptions, view = view }
 
@@ -45,15 +45,10 @@ update msg model =
                 ( { model | participants = participants }, Cmd.none )
 
         Go ->
-            ( model, Random.generate Assign (shuffleList model.participants) )
+            ( model, Random.generate Assign (Random.List.shuffle model.participants) )
 
         Assign randomlyOrderedParticipants ->
             ( { model | assignment = pairsWrapping randomlyOrderedParticipants }, Cmd.none )
-
-
-shuffleList : List a -> Random.Generator (List a)
-shuffleList l =
-    Random.map Array.toList (Random.Array.shuffle (Array.fromList l))
 
 
 pairsWrapping : List a -> List ( a, a )
