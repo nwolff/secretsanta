@@ -1,18 +1,23 @@
-module Main exposing (..)
+module Main exposing (Model, Msg(..), body, init, main, pairsWrapping, subscriptions, update, view)
 
-import Html exposing (div, button, text, textarea, Html, ul, li, h1)
-import Html.Attributes exposing (class, rows, placeholder)
+import Browser exposing (Document)
+import Html exposing (Html, button, div, h1, li, text, textarea, ul)
+import Html.Attributes exposing (class, placeholder, rows)
 import Html.Events exposing (onClick, onInput)
-import Html exposing (program)
 import List
 import Random
 import Random.List
 import String
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    program { init = ( model, Cmd.none ), update = update, subscriptions = subscriptions, view = view }
+    Browser.document
+        { init = init
+        , update = update
+        , subscriptions = subscriptions
+        , view = view
+        }
 
 
 type alias Model =
@@ -21,9 +26,11 @@ type alias Model =
     }
 
 
-model : Model
-model =
-    Model [] []
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( Model [] []
+    , Cmd.none
+    )
 
 
 type Msg
@@ -42,7 +49,7 @@ update msg model =
                         |> List.map String.trim
                         |> List.filter (not << String.isEmpty)
             in
-                ( { model | participants = participants }, Cmd.none )
+            ( { model | participants = participants }, Cmd.none )
 
         Go ->
             ( model, Random.generate Assign (Random.List.shuffle model.participants) )
@@ -55,19 +62,24 @@ pairsWrapping : List a -> List ( a, a )
 pairsWrapping l =
     case l of
         x :: xs ->
-            List.map2 (,) l (xs ++ [ x ])
+            List.map2 Tuple.pair l (xs ++ [ x ])
 
         [] ->
             []
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
+    Document "Secret Santa" [ body model ]
+
+
+body : Model -> Html Msg
+body model =
     div [ class "container" ]
         [ div [ class "secret-santa" ]
             [ h1 [] [ text "Will help you randomly decide who should give presents to who." ]
