@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), body, init, main, pairsWrapping, subscriptions, update, view)
+module Main exposing (Model, Msg(..), main)
 
 import Browser exposing (Document)
 import Html exposing (Html, button, div, h1, li, text, textarea, ul)
